@@ -2,6 +2,8 @@
 
 laravel 10 Job Portal with Docker, MySQL, Bootstrap 5 and jquery.
 
+![My logo](public/images/2023-11-01_21-47.png)
+
 ## Demo
 
     comming soon
