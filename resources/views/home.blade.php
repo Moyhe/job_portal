@@ -1,189 +1,374 @@
 <x-layout>
 
-    <div class="container mt-5 mb-3">
-        <h3>Find your next employer</h3>
 
-        <div class="row">
-            @foreach(\App\Models\User::where('user_type','employer')->take(6)->orderBy('id','DESC')->get() as $employer)
-            <div class="col-md-4">
-                <div class="card p-3 mb-2">
-                    <div class="d-flex justify-content-between">
-                        <div class="d-flex flex-row align-items-center">
-                            <div class="icon">
-                                @if($employer->profile_pic)
-                               <a href="{{route('company',[$employer->id])}}"><img src="{{Storage::url($employer->profile_pic)}}" width="50"></a>
-                                @else
-                                <a href="{{route('company',[$employer->id])}}"><img src="icons8-amazon-60.png"></a>
-                                @endif
-                            </div>
-                            <div class="ms-2 c-details">
-                                <h6 class="mb-0">{{$employer->name}}</h6> <span></span>
-                            </div>
-                        </div>
-                        <div class="badge"> <span>Design</span> </div>
-                    </div>
+    <!-- HOME -->
+    <section class="home-section section-hero overlay bg-image" style="background-image: url('{{asset('image/hero_1.jpg')}}');" id="home-section">
+
+        <div class="container">
+          <div class="row align-items-center justify-content-center">
+            <div class="col-md-12">
+              <div class="mb-5 text-center">
+                <h1 class="text-white font-weight-bold">The Easiest Way To Get Your Dream Job</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate est, consequuntur perferendis.</p>
+              </div>
+              <form method="post" class="search-jobs-form">
+                <div class="row mb-5">
+                  <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                    <input type="text" class="form-control form-control-lg" placeholder="Job title, Company...">
+                  </div>
+                  <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                    <select class="selectpicker" data-style="btn-white btn-lg" data-width="100%" data-live-search="true" title="Select Region">
+                      <option>Anywhere</option>
+                      <option>San Francisco</option>
+                      <option>Palo Alto</option>
+                      <option>New York</option>
+                      <option>Manhattan</option>
+                      <option>Ontario</option>
+                      <option>Toronto</option>
+                      <option>Kansas</option>
+                      <option>Mountain View</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                    <select class="selectpicker" data-style="btn-white btn-lg" data-width="100%" data-live-search="true" title="Select Job Type">
+                      <option>Part Time</option>
+                      <option>Full Time</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block text-white btn-search"><span class="icon-search icon mr-2"></span>Search Job</button>
+                  </div>
                 </div>
-            </div>
-            @endforeach
-
-
-        </div>
-    </div>
-    <div class="container mt-5">
-        <div class="d-flex justify-content-between mt-5">
-            <h4>Recommended Jobs</h4>
-
-            <div class="dropdown">
-                <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Salary
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{route('listing.index',['sort' => 'salary_high_to_low'])}}">High to low</a></li>
-                    <li><a class="dropdown-item" href="{{route('listing.index',['sort' => 'salary_low_to_high'])}}">Low to high</a></li>
-
-                </ul>
-
-                <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Date
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{route('listing.index',['date' => 'latest'])}}">Latest</a></li>
-                    <li><a class="dropdown-item" href="{{route('listing.index',['date' => 'oldest'])}}">Oldest</a></li>
-                </ul>
-
-                <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Job type
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{route('listing.index',['job_type' => 'Fulltime'])}}">Fulltime</a></li>
-                    <li><a class="dropdown-item" href="{{route('listing.index',['job_type' => 'Parttime'])}}">Parttime</a></li>
-                    <li><a class="dropdown-item" href="{{route('listing.index',['job_type' => 'Casual'])}}">Casual</a></li>
-                    <li><a class="dropdown-item" href="{{route('listing.index',['job_type' => 'Contract'])}}">Contract</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="row mt-2 g-1">
-            @foreach($jobs as $job)
-            <div class="col-md-3">
-                <div class="card p-2 {{$job->job_type}}">
-                    <div class="text-right"> <small class="badge text-bg-info">{{$job->job_type}}</small> </div>
-                    <div class="text-center mt-2 p-3"> <img class="rounded-circle" width="50" src="{{Storage::url($job->profile->profile_pic)}}" width="100" /> <br>
-                        <span class="d-bl>ock font-weight-bold">{{$job->title}}</span>
-                        <hr> <span>{{$job->profile->name}}</span>
-                        <div class="d-flex flex-row align-items-center justify-content-center">
-                            <small class="ml-1">{{$job->address}}</small>
-                        </div>
-                        <div class="d-flex justify-content-between mt-3"> <span>${{number_format((float)$job->salary,2)}}</span>
-                            <a href="{{route('job.show',[$job->slug])}}"><button class="btn btn-dark">Apply Now</button> </a>
-                        </div>
-                    </div>
+                <div class="row">
+                  <div class="col-md-12 popular-keywords">
+                    <h3>Trending Keywords:</h3>
+                    <ul class="keywords list-unstyled m-0 p-0">
+                      <li><a href="#" class="">UI Designer</a></li>
+                      <li><a href="#" class="">Python</a></li>
+                      <li><a href="#" class="">Developer</a></li>
+                    </ul>
+                  </div>
                 </div>
+              </form>
             </div>
-            @endforeach
+          </div>
         </div>
-    </div>
 
-    <div class="container">
-        <div class="mt-5">
-            <h3>Recent openning</h3>
-        </div>
-        @foreach(\App\Models\Listing::take(3)->orderBy('id','DESC')->get() as $listing)
-        <div class="card mb-3">
-            <div class="card-body">
-                <div class="d-flex flex-column flex-lg-row">
+        <a href="#next" class="scroll-button smoothscroll">
+          <span class=" icon-keyboard_arrow_down"></span>
+        </a>
 
-                    <div class="row flex-fill">
-                        <div class="col-sm-5">
-                            <h4 class="h5">{{$listing->title}}</h4>
-                            <span class="badge bg-secondary">{{$listing->job_type}}</span> <span class="badge bg-success">${{number_format((float)$listing->salary,2)}}</span>
-                        </div>
+      </section>
 
-                        <div class="col-sm-7 text-lg-end">
-                            <a href="{{route('job.show',$listing->slug)}}" class="btn btn-dark stretched-link">View</a>
-                        </div>
-                    </div>
-                </div>
+
+      <section class="py-5 bg-image overlay-primary fixed overlay" id="next" style="background-image: url('{{ asset('image/hero_1.jpg') }}');">
+        <div class="container">
+          <div class="row mb-5 justify-content-center">
+            <div class="col-md-7 text-center">
+              <h2 class="section-title mb-2 text-white">JobBoard Site Stats</h2>
+              <p class="lead text-white">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita unde officiis recusandae sequi excepturi corrupti.</p>
             </div>
-        </div>
-        @endforeach
+          </div>
+          <div class="row pb-0 block__19738 section-counter">
 
-    </div>
-    <footer class="text-white text-lg-start bg-dark">
-        <!-- Grid container -->
-        <div class="m-5 justify-content-between d-flex p-4">
-          <!--Grid row-->
-          <div class="row mt-4">
-            <!--Grid column-->
-            <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
-              <h5 class="text-uppercase mb-4">About company</h5>
-
-              <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              </p>
-
-              <p>
-                Magni quidem consequuntur, aliquid ipsum provident fugiat reiciendis quasi excepturi enim nam eos nihil ipsam, porro fugit, dolores minus necessitatibus molestias ab.
-              </p>
-
-
+            <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
+              <div class="d-flex align-items-center justify-content-center mb-2">
+                <strong class="number" data-number="1930">0</strong>
+              </div>
+              <span class="caption">Candidates</span>
             </div>
-            <!--Grid column-->
 
-            <!--Grid column-->
-            <div class="col-lg-4 col-md-6 mb-4 mb-md-0 rounded">
-              <h5 class="text-uppercase mb-4 pb-1">Search something</h5>
+            <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
+              <div class="d-flex align-items-center justify-content-center mb-2">
+                <strong class="number" data-number="54">0</strong>
+              </div>
+              <span class="caption">Jobs Posted</span>
+            </div>
 
-              <div class="form-outline form-white mb-4">
-                <input type="text" id="formControlLg" placeholder="search...." class="form-control form-control-lg" />
+            <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
+              <div class="d-flex align-items-center justify-content-center mb-2">
+                <strong class="number" data-number="120">0</strong>
+              </div>
+              <span class="caption">Jobs Filled</span>
+            </div>
+
+            <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
+              <div class="d-flex align-items-center justify-content-center mb-2">
+                <strong class="number" data-number="550">0</strong>
+              </div>
+              <span class="caption">Companies</span>
+            </div>
+
+
+          </div>
+        </div>
+      </section>
+
+
+      <section class="site-section">
+        <div class="container">
+
+          <div class="row mb-5 justify-content-center">
+            <div class="col-md-7 text-center">
+              <h2 class="section-title mb-2">43,167 Job Listed</h2>
+            </div>
+          </div>
+
+          <ul class="job-listings mb-5">
+            <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
+              <a href="job-single.html"></a>
+              <div class="job-listing-logo">
+                <img src="{{ asset('image/job_logo_1.jpg') }}" alt="Free Website Template by Free-Template.co" class="img-fluid">
               </div>
 
-              <ul class="fa-ul" style="margin-left: 1.65em;">
-                <li class="mb-3">
-                  <span class="fa-li"><i class="fas fa-home"></i></span><span class="ms-2">Eygpt, Cairo</span>
-                </li>
-                <li class="mb-3">
-                  <span class="fa-li"><i class="fas fa-envelope"></i></span><span class="ms-2">info@techjobs.com</span>
-                </li>
-                <li class="mb-3">
-                  <span class="fa-li"><i class="fas fa-phone"></i></span><span class="ms-2">+ 01014738140</span>
-                </li>
-              </ul>
-            </div>
-            <!--Grid column-->
+              <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
+                <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
+                  <h2>Product Designer</h2>
+                  <strong>Adidas</strong>
+                </div>
+                <div class="job-listing-location mb-3 mb-sm-0 custom-width w-25">
+                  <span class="icon-room"></span> New York, New York
+                </div>
+                <div class="job-listing-meta">
+                  <span class="badge badge-danger">Part Time</span>
+                </div>
+              </div>
 
-            <!--Grid column-->
-            <div class="col-lg-4 col-md-6 mb-4 mb-md-0 rounded">
-              <h5 class="text-uppercase mb-4">Opening hours</h5>
+            </li>
+            <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
+              <a href="job-single.html"></a>
+              <div class="job-listing-logo">
+                <img src="{{ asset('image/job_logo_2.jpg') }}" alt="Free Website Template by Free-Template.co" class="img-fluid">
+              </div>
 
-              <table class="table text-center  text-white">
-                <tbody class="fw-normal">
-                  <tr>
-                    <td>Mon - Thu:</td>
-                    <td>8am - 9pm</td>
-                  </tr>
-                  <tr>
-                    <td>Fri - Sat:</td>
-                    <td>8am - 1am</td>
-                  </tr>
-                  <tr>
-                    <td>Sunday:</td>
-                    <td>9am - 10pm</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
+                <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
+                  <h2>Digital Marketing Director</h2>
+                  <strong>Sprint</strong>
+                </div>
+                <div class="job-listing-location mb-3 mb-sm-0 custom-width w-25">
+                  <span class="icon-room"></span> Overland Park, Kansas
+                </div>
+                <div class="job-listing-meta">
+                  <span class="badge badge-success">Full Time</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
+              <a href="job-single.html"></a>
+              <div class="job-listing-logo">
+                <img src="{{ asset('image/job_logo_3.jpg') }}" alt="Free Website Template by Free-Template.co" class="img-fluid">
+              </div>
+
+              <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
+                <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
+                  <h2>Back-end Engineer (Python)</h2>
+                  <strong>Amazon</strong>
+                </div>
+                <div class="job-listing-location mb-3 mb-sm-0 custom-width w-25">
+                  <span class="icon-room"></span> Overland Park, Kansas
+                </div>
+                <div class="job-listing-meta">
+                  <span class="badge badge-success">Full Time</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
+              <a href="job-single.html"></a>
+              <div class="job-listing-logo">
+                <img src="{{ asset('image/job_logo_4.jpg') }}" alt="Free Website Template by Free-Template.co" class="img-fluid">
+              </div>
+
+              <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
+                <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
+                  <h2>Senior Art Director</h2>
+                  <strong>Microsoft</strong>
+                </div>
+                <div class="job-listing-location mb-3 mb-sm-0 custom-width w-25">
+                  <span class="icon-room"></span> Anywhere
+                </div>
+                <div class="job-listing-meta">
+                  <span class="badge badge-success">Full Time</span>
+                </div>
+              </div>
+            </li>
+
+            <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
+              <a href="job-single.html"></a>
+              <div class="job-listing-logo">
+                <img src="{{ asset('image/job_logo_5.jpg') }}" alt="Free Website Template by Free-Template.co" class="img-fluid">
+              </div>
+
+              <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
+                <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
+                  <h2>Product Designer</h2>
+                  <strong>Puma</strong>
+                </div>
+                <div class="job-listing-location mb-3 mb-sm-0 custom-width w-25">
+                  <span class="icon-room"></span> San Mateo, CA
+                </div>
+                <div class="job-listing-meta">
+                  <span class="badge badge-success">Full Time</span>
+                </div>
+              </div>
+            </li>
+            <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
+              <a href="job-single.html"></a>
+              <div class="job-listing-logo">
+                <img src="{{ asset('image/job_logo_1.jpg') }}" alt="Free Website Template by Free-Template.co" class="img-fluid">
+              </div>
+
+              <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
+                <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
+                  <h2>Product Designer</h2>
+                  <strong>Adidas</strong>
+                </div>
+                <div class="job-listing-location mb-3 mb-sm-0 custom-width w-25">
+                  <span class="icon-room"></span> New York, New York
+                </div>
+                <div class="job-listing-meta">
+                  <span class="badge badge-danger">Part Time</span>
+                </div>
+              </div>
+
+            </li>
+            <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
+              <a href="job-single.html"></a>
+              <div class="job-listing-logo">
+                <img src="{{ asset('image/job_logo_2.jpg') }}" alt="Free Website Template by Free-Template.co" class="img-fluid">
+              </div>
+
+              <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
+                <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
+                  <h2>Digital Marketing Director</h2>
+                  <strong>Sprint</strong>
+                </div>
+                <div class="job-listing-location mb-3 mb-sm-0 custom-width w-25">
+                  <span class="icon-room"></span> Overland Park, Kansas
+                </div>
+                <div class="job-listing-meta">
+                  <span class="badge badge-success">Full Time</span>
+                </div>
+              </div>
+            </li>
+
+        </ul>
+        </div>
+      </section>
+
+
+      <section class="py-5 bg-image overlay-primary fixed overlay" style="background-image: url('{{ asset('image/hero_1.jpg') }}');">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-md-8">
+              <h2 class="text-white">Looking For A Job?</h2>
+              <p class="mb-0 text-white lead">Lorem ipsum dolor sit amet consectetur adipisicing elit tempora adipisci impedit.</p>
             </div>
-            <!--Grid column-->
+            <div class="col-md-3 ml-auto">
+              <a href="#" class="btn btn-warning btn-block btn-lg">Sign Up</a>
+            </div>
           </div>
-          <!--Grid row-->
         </div>
-        <!-- Grid container -->
+      </section>
 
-        <!-- Copyright -->
-        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-          © 2023 Copyright:
-          <a class="text-white" href="https://mdbootstrap.com/">Tech jobs</a>
+
+      <section class="site-section py-4">
+        <div class="container">
+
+          <div class="row align-items-center">
+            <div class="col-12 text-center mt-4 mb-5">
+              <div class="row justify-content-center">
+                <div class="col-md-7">
+                  <h2 class="section-title mb-2">Company We've Helped</h2>
+                  <p class="lead">Porro error reiciendis commodi beatae omnis similique voluptate rerum ipsam fugit mollitia ipsum facilis expedita tempora suscipit iste</p>
+                </div>
+              </div>
+
+            </div>
+            <div class="col-6 col-lg-3 col-md-6 text-center">
+              <img src="{{ asset('image/logo_mailchimp.svg') }}" alt="Image" class="img-fluid logo-1">
+            </div>
+            <div class="col-6 col-lg-3 col-md-6 text-center">
+              <img src="{{ asset('image/logo_paypal.svg') }}" alt="Image" class="img-fluid logo-2">
+            </div>
+            <div class="col-6 col-lg-3 col-md-6 text-center">
+              <img src="{{ asset('image/logo_stripe.svg') }}" alt="Image" class="img-fluid logo-3">
+            </div>
+            <div class="col-6 col-lg-3 col-md-6 text-center">
+              <img src="{{ asset('image/logo_visa.svg') }}" alt="Image" class="img-fluid logo-4">
+            </div>
+
+            <div class="col-6 col-lg-3 col-md-6 text-center">
+              <img src="{{ asset('image/logo_apple.svg') }}" alt="Image" class="img-fluid logo-5">
+            </div>
+            <div class="col-6 col-lg-3 col-md-6 text-center">
+              <img src="{{ asset('image/logo_tinder.svg') }}" alt="Image" class="img-fluid logo-6">
+            </div>
+            <div class="col-6 col-lg-3 col-md-6 text-center">
+              <img src="{{ asset('image/logo_sony.svg') }}" alt="Image" class="img-fluid logo-7">
+            </div>
+            <div class="col-6 col-lg-3 col-md-6 text-center">
+              <img src="{{ asset('image/logo_airbnb.svg') }}" alt="Image" class="img-fluid logo-8">
+            </div>
+          </div>
         </div>
-        <!-- Copyright -->
-      </footer>
+      </section>
+
+      <section class="bg-light pt-5 testimony-full">
+
+        <div class="owl-carousel single-carousel">
+
+
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-6 align-self-center text-center text-lg-left">
+                <blockquote>
+                  <p>&ldquo;Soluta quasi cum delectus eum facilis recusandae nesciunt molestias accusantium libero dolores repellat id in dolorem laborum ad modi qui at quas dolorum voluptatem voluptatum repudiandae.&rdquo;</p>
+                  <p><cite> &mdash; Corey Woods, @Dribbble</cite></p>
+                </blockquote>
+              </div>
+              <div class="col-lg-6 align-self-end text-center text-lg-right">
+                <img src="{{ asset('image/person_transparent_2.png') }}" alt="Image" class="img-fluid mb-0">
+              </div>
+            </div>
+          </div>
+
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-6 align-self-center text-center text-lg-left">
+                <blockquote>
+                  <p>&ldquo;Soluta quasi cum delectus eum facilis recusandae nesciunt molestias accusantium libero dolores repellat id in dolorem laborum ad modi qui at quas dolorum voluptatem voluptatum repudiandae.&rdquo;</p>
+                  <p><cite> &mdash; Chris Peters, @Google</cite></p>
+                </blockquote>
+              </div>
+              <div class="col-lg-6 align-self-end text-center text-lg-right">
+                <img src="{{ asset('image/person_transparent.png') }}" alt="Image" class="img-fluid mb-0">
+              </div>
+            </div>
+          </div>
+      </div>
+    </section>
+
+
+
+    <section class="pt-5 bg-image overlay-primary fixed overlay" style="background-image: url('{{ asset('image/hero_1.jpg') }}');">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6 align-self-center text-center text-md-left mb-5 mb-md-0">
+              <h2 class="text-white">Get The Mobile Apps</h2>
+              <p class="mb-5 lead text-white">Lorem ipsum dolor sit amet consectetur adipisicing elit tempora adipisci impedit.</p>
+              <p class="mb-0">
+                <a href="#" class="btn btn-dark btn-md px-4 border-width-2"><span class="icon-apple mr-3"></span>App Store</a>
+                <a href="#" class="btn btn-dark btn-md px-4 border-width-2"><span class="icon-android mr-3"></span>Play Store</a>
+              </p>
+            </div>
+            <div class="col-md-6 ml-auto align-self-end">
+              <img src="{{ asset('image/apps.png') }}" alt="Free Website Template by Free-Template.co" class="img-fluid">
+            </div>
+          </div>
+        </div>
+      </section>
 
 </x-layout>
