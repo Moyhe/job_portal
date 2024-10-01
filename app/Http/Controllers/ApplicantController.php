@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\ShortlistMail;
 use App\Models\Listing;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class ApplicantController extends Controller
@@ -51,6 +52,13 @@ class ApplicantController extends Controller
     {
         /** @var User $user */
         $user = auth()->user();
+
+        $job = $user->listings()->where('listing_id', $listingId);
+
+        if ($job->exists()) {
+            return redirect()->back()->with('error', 'You have already applied for this job.');
+        }
+
         $user->listings()->syncWithoutDetaching($listingId);
 
         return back()->with('success', 'Youe application was successfully submited');

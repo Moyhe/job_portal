@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\AdminRoute;
 use App\Http\Middleware\isEmployer;
 use App\Http\Middleware\isPremiumUser;
 use App\Http\Requests\JobEditFormRequest;
@@ -19,7 +20,7 @@ class PostJobController extends Controller
     public function __construct(JobPost $job)
     {
         $this->job = $job;
-        $this->middleware('auth');
+        $this->middleware(AdminRoute::class);
         $this->middleware(isPremiumUser::class)->only(['create', 'store']);
         $this->middleware(isEmployer::class);
     }
@@ -47,7 +48,6 @@ class PostJobController extends Controller
      */
     public function store(JobPostFormRequest $request)
     {
-
         $this->job->store();
         return redirect()->route('job.index')->with('success', 'Your job post has been posted');
     }

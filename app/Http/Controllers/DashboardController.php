@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Listing;
+use Faker\Core\Number;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,7 +14,9 @@ class DashboardController extends Controller
      */
     public function index()
     {
+
         $listings = Listing::latest()->withCount('users')->where('user_id', auth()->user()->id)->first();
+
 
         return view('dashboard', compact('listings'));
     }

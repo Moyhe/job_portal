@@ -1,77 +1,211 @@
 <x-layout>
 
-    <div class="container mb-5 mt-3">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <img src="{{Storage::url($listing->feature_image)}}" class="card-img-top" alt="Cover Image" style="height: 250px; object-fit: cover;">
-                    <div class="card-body">
+    @php
+        $job = auth()
+            ->user()
+            ->listings()
+            ->where('listing_id', $listing->id);
+    @endphp
 
-                        <b>{{$listing->profile->name}}</b>
-                        <h2 class="card-title">{{$listing->title}}</h2>
+    <!-- HOME -->
+    <x-banner :$listing />
 
-                         <x-flash />
+    <section class="site-section">
+        <div class="container">
+            <x-flash />
+            <div class="row align-items-center mb-5">
+                <div class="col-lg-8 mb-4 mb-lg-0">
+                    <div class="d-flex align-items-center">
+                        <div class="border p-2 d-inline-block mr-3 job-listing-logo rounded">
+                            <img style="width: 288px; height: 288px;" src="{{ $listing->getThumbnail() }}" alt="Image">
+                        </div>
+                        <div>
+                            <h2>{{ $listing->title }}</h2>
+                            <div>
+                                <span class="ml-0 mr-2 mb-2"><span class="icon-briefcase mr-2"></span>Puma</span>
+                                <span class="m-2"><span
+                                        class="icon-room mr-2"></span>{{ $listing->job_region }}</span>
+                                <span class="m-2"><span class="icon-clock-o mr-2"></span><span
+                                        class="text-primary">{{ $listing->job_type }}</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                        <span class="badge bg-primary">{{$listing->job_type}}</span>
-                        <p>Salary: ${{number_format((float)$listing->salary,2)}}</p>
-                        Address: {{$listing->address}}
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="mb-5">
+                            {{-- <figure class="mb-5"><img src="{{ asset('image/job_single_img_1.jpg') }}" alt="Image" class="img-fluid rounded"></figure> --}}
+                            <h3 class="h5 d-flex align-items-center mb-4 text-primary"><span
+                                    class="icon-align-left mr-3"></span>Job Description</h3>
+                            <p>
+                                {{ $listing->description }}
+                            </p>
+                        </div>
+                        <div class="mb-5">
+                            <h3 class="h5 d-flex align-items-center mb-4 text-primary"><span
+                                    class="icon-rocket mr-3"></span>Responsibilities</h3>
+                            <p>
+                                {{ $listing->roles }}
+                            </p>
+                        </div>
 
-                        <h4 class="mt-4">Description</h4>
-                        <p class="card-text lead">{!!$listing->description!!}</p>
+                        <div class="mb-5">
+                            <h3 class="h5 d-flex align-items-center mb-4 text-primary"><span
+                                    class="icon-book mr-3"></span>Education + Experience</h3>
+                            <p>
+                                {{ $listing->education_experience }}
+                            </p>
+                        </div>
 
-                        <h4>Roles and Responsibilities</h4>
-                        {!!$listing->roles!!}
+                        <div class="mb-5">
+                            <h3 class="h5 d-flex align-items-center mb-4 text-primary"><span
+                                    class="icon-turned_in mr-3"></span>Other Benifits</h3>
+                            <p>
+                                {{ $listing->other_benifits }}
+                            </p>
+                        </div>
 
-                        <p class="card-text mt-4">Application closing date: {{$listing->application_close_date}}</p>
-                        @if(Auth::check())
-                        @if(auth()->user()->resume)
-                        <form action="{{route('applicantion.submit',[$listing->id])}}" method="POST">
-                            @csrf
-                            <button href="#" class="btn btn-dark btn-lg mt-3">Apply Now</button>
-                        </form>
-                        @else
+                        <div class="row mb-5">
 
-                        <button type="button" class="btn btn-dark btn-lg " data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                            Apply
-                        </button>
+                            @if (Auth::check())
+                                <div class="col-6">
+                                    {{-- <button class="btn btn-block btn-light btn-md"><i class="icon-heart"></i>Save Job</button> --}}
+                                    <form action="{{ route('save.job') }}" method="POST">
+                                        @csrf
+                                        <input name="job_id" type="hidden" value="{{ $listing->id }}">
 
-                        </form>
-                        @endif
-                        @else
-                        <p>Please login to apply</p>
-                        @endif
+                                        @if ($count > 0)
+                                            <button type="submit" class="btn btn-block btn-light btn-md"
+                                                @disabled(true)><i class="icon-heart"></i>you saved this
+                                                job</button>
+                                        @else
+                                            <button type="submit" class="btn btn-block btn-light btn-md"><i
+                                                    class="icon-heart"></i>Save Job</button>
+                                        @endif
+                                    </form>
+                                </div>
 
-                        <!-- Modal -->
-                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                            <form action="{{route('applicantion.submit',[$listing->id])}}" method="POST">
-                                @csrf
-                                <div class="modal-dialog">
+                                <div class="col-6">
+                                    @if ($job->exists())
+                                        <form action="{{ route('applicantion.submit', [$listing->id]) }}"
+                                            method="POST">
+                                            @csrf
+                                            <button @disabled(true) href="#"
+                                                class="btn btn-block btn-primary btn-md">
+                                                submitted
+                                            </button>
+                                        </form>
+                                    @else
+                                        <button type="button" id="myBtn" class="btn btn-block btn-primary btn-md">
+                                            Apply Now
+                                        </button>
+                                    @endif
+                                </div>
+                            @else
+                                <a href="{{ route('login') }}" class="btn btn-block btn-primary btn-md">Please login to
+                                    apply</a>
+                            @endif
+
+                            <!-- The Modal -->
+                            <div id="myModal" class="modal">
+
+                                <form action="{{ route('applicantion.submit', [$listing->id]) }}" method="POST">
+                                    @csrf
+                                    <!-- Modal content -->
                                     <div class="modal-content">
                                         <div class="modal-header">
+
                                             <h1 class="modal-title fs-5" id="staticBackdropLabel">Upload resume</h1>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <span class="close">&times;</span>
                                         </div>
-                                        <div class="modal-body">
+                                        <div class="modal-body mt-3">
                                             <input type="file" />
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="submit" id="btnApply" disabled class="btn btn-success btn-lg">Apply</button>
+                                            <button type="submit" id="btnApply" disabled
+                                                class="btn btn-success btn-lg mt-3 mb-2">Apply</button>
                                         </div>
                                     </div>
-                                </div>
-                            </form>
+                                </form>
+
+                            </div>
                         </div>
+
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="bg-light p-3 border rounded mb-4">
+                            <h3 class="text-primary  mt-3 h5 pl-3 mb-3 ">Job Summary</h3>
+                            <ul class="list-unstyled pl-3 mb-0">
+                                <li class="mb-2"><strong class="text-black">Published on:</strong>
+                                    {{ $listing->created_at->format('Y-d-m') }}</li>
+                                <li class="mb-2"><strong class="text-black">Vacancy:</strong>
+                                    {{ $listing->vacancy }} </li>
+                                <li class="mb-2"><strong class="text-black">Employment Status:</strong>
+                                    {{ $listing->job_type }} </li>
+                                <li class="mb-2"><strong class="text-black">Experience:</strong>
+                                    {{ $listing->experience }}</li>
+                                <li class="mb-2"><strong class="text-black">Job Location:</strong>
+                                    {{ $listing->job_region }} </li>
+                                <li class="mb-2"><strong class="text-black">Salary:</strong> {{ $listing->salary }}
+                                </li>
+                                <li class="mb-2"><strong class="text-black">Gender:</strong> {{ $listing->gender }}
+                                </li>
+                                <li class="mb-2"><strong class="text-black">Application
+                                        Deadline:</strong>{{ $listing->application_close_date }}</li>
+                            </ul>
+                        </div>
+
 
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <script>
+    </section>
 
-       const inputElement = document.querySelector('input[type="file"]');
-       const pond = FilePond.create(inputElement);
-       const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+
+    <section class="site-section" id="next">
+        <div class="container">
+
+            <div class="row mb-5 justify-content-center">
+                <div class="col-md-7 text-center">
+                    <h2 class="section-title mb-2">{{ count($jobRelated) }} Related Jobs</h2>
+                </div>
+            </div>
+
+            <ul class="job-listings mb-5">
+
+                @foreach ($jobRelated as $job)
+                    <li class="job-listing d-block d-sm-flex pb-3 pb-sm-0 align-items-center">
+                        <a href="{{ route('job.show', $job->slug) }}"></a>
+                        <div class="job-listing-logo">
+                            <img src="{{ $job->getThumbnail() }}" alt="Image" class="img-fluid">
+                        </div>
+
+                        <div class="job-listing-about d-sm-flex custom-width w-100 justify-content-between mx-4">
+                            <div class="job-listing-position custom-width w-50 mb-3 mb-sm-0">
+                                <h2>{{ $job->title }}</h2>
+                                <strong>Adidas</strong>
+                            </div>
+                            <div class="job-listing-location mb-3 mb-sm-0 custom-width w-25">
+                                <span class="icon-room"></span> {{ $job->job_region }}
+                            </div>
+                            <div class="job-listing-meta">
+                                <span class="badge badge-danger">{{ $job->job_type }}</span>
+                            </div>
+                        </div>
+
+                    </li>
+                @endforeach
+
+            </ul>
+        </div>
+    </section>
+
+    <script>
+        const inputElement = document.querySelector('input[type="file"]');
+        const pond = FilePond.create(inputElement);
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
         pond.setOptions({
             server: {
@@ -98,4 +232,5 @@
             },
         });
     </script>
+
 </x-layout>

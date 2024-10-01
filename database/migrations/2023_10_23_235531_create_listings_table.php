@@ -19,8 +19,13 @@ return new class extends Migration
             $table->string('slug');
             $table->string('feature_image');
             $table->text('roles');
+            $table->string('experience');
+            $table->text('education_experience');
+            $table->text('other_benifits');
+            $table->string('gender');
+            $table->string('vacancy');
             $table->string('job_type');
-            $table->string('address');
+            $table->string('job_region');
             $table->string('salary');
             $table->date('application_close_date');
             $table->timestamps();

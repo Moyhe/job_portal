@@ -3,7 +3,7 @@
         <div class="row justify-content-center">
             <x-flash />
             <h2 >Update your profile</h2>
-            <form action="{{route('user.update.profile')}}" method="post" enctype="multipart/form-data" class="mt-3">
+            <form action="{{route('admin.update.profile')}}" method="post" enctype="multipart/form-data" class="mt-3">
                 @csrf
                 <div class="col-md-8">
                     <div class="form-group mb-3">
@@ -27,7 +27,7 @@
         <div class="row justify-content-center mt-5">
             <h2>Change your password</h2>
 
-            <form action="{{route('user.password')}}" method="post">
+            <form action="{{route('admin.password')}}" method="post">
                 @csrf
                 <div class="col-md-8">
                     <div class="form-group mb-3">

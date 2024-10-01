@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\AdminRoute;
 use App\Http\Middleware\doNotAllowUserToMakePayment;
 use App\Http\Middleware\isEmployer;
 use App\Mail\PurchaseMail;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Stripe\Checkout\Session;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Mail;
 use Stripe\Stripe;
+use Stripe\Checkout\Session;
 
 class SubscriptionController extends Controller
 {
@@ -23,8 +25,8 @@ class SubscriptionController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['auth', isEmployer::class]);
-        $this->middleware(['auth', doNotAllowUserToMakePayment::class])->except('subscribe');
+        $this->middleware([AdminRoute::class, isEmployer::class]);
+        $this->middleware([AdminRoute::class, doNotAllowUserToMakePayment::class])->except('subscribe');
     }
 
     /**
@@ -65,18 +67,27 @@ class SubscriptionController extends Controller
 
         try {
             $selectPlan = null;
-            if ($request->is('pay/weekly')) {
+            $billingEnds = null;
+
+            // Debug request path
+            Log::info('Request path: ' . $request->path());
+
+            if ($request->routeIs('pay.weekly')) {
                 $selectPlan = $plans['weekly'];
                 $billingEnds = now()->addWeek()->startOfDay()->toDateString();
-            } elseif ($request->is('pay/monthly')) {
+            } elseif ($request->routeIs('pay.monthly')) {
                 $selectPlan = $plans['monthly'];
                 $billingEnds = now()->addMonth()->startOfDay()->toDateString();
-            } elseif ($request->is('pay/yearly')) {
+            } elseif ($request->routeIs('pay.yearly')) {
                 $selectPlan = $plans['yearly'];
                 $billingEnds = now()->addYear()->startOfDay()->toDateString();
             }
 
+
+            // Log selected plan
             if ($selectPlan) {
+                Log::info('Selected plan: ' . $selectPlan['name']);
+
                 $successURl = URL::signedRoute('payment.success', [
                     'plan' => $selectPlan['name'],
                     'billing_ends' => $billingEnds
@@ -86,7 +97,7 @@ class SubscriptionController extends Controller
                     'line_items' => [[
                         'price_data' => [
                             'currency' => $selectPlan['currency'],
-                            'unit_amount' => $selectPlan['amount'] * 100,
+                            'unit_amount' => $selectPlan['amount'] * 100, // Stripe expects amount in cents
                             'product_data' => [
                                 'name' => $selectPlan['name'],
                                 'description' => $selectPlan['description'],
@@ -96,15 +107,23 @@ class SubscriptionController extends Controller
                     ]],
                     'mode' => 'payment',
                     'success_url' => $successURl,
-                    'cancel_url' => route('payment.cancel')
+                    'cancel_url' => route('payment.cancel'),
                 ]);
 
+                Log::info('Session URL: ' . $session->url);
+
                 return redirect($session->url);
+            } else {
+                // Log no plan selected
+                Log::warning('No plan selected.');
+                return response()->json(['error' => 'No plan selected.'], 400);
             }
         } catch (\Exception $e) {
-            return response()->json($e);
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
 
     public function paymentSuccess(Request $request)
     {

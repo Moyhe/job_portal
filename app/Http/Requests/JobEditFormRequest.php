@@ -23,13 +23,19 @@ class JobEditFormRequest extends FormRequest
     {
         return [
             'title' => 'required|min:5',
-            'feature_image' => 'mimes:png,jpg,jpeg|max:2048',
+            'feature_image' => 'image|mimes:png,jpg,jpeg|max:2048',
             'description' => 'required|min:10',
             'roles' => 'required|min:10',
             'job_type' => 'required',
-            'address' => 'required',
             'date' => 'required',
-            'salary' => 'required'
+            'salary' => 'required',
+            'job_region' => 'required',
+            'experience' => 'required',
+            'education_experience' => 'required',
+            'other_benifits' => 'required',
+            'gender' => 'required',
+            'vacancy' => 'required',
+            'company' => 'required'
         ];
     }
 }

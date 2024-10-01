@@ -109,13 +109,11 @@ class UserController extends Controller
         return redirect()->to('/');
     }
 
-    public function profile()
-    {
-        return view('profile.index');
-    }
+
 
     public function seekerProfile()
     {
+
         return view('seeker.profile');
     }
 
@@ -171,8 +169,10 @@ class UserController extends Controller
 
     public function jobApplied()
     {
-        $users =  User::with('listings')->where('id', auth()->user()->id)->get();
+        $header = 'Job Applications';
 
-        return view('seeker.job-applied', compact('users'));
+        $users =  User::with('listings')->where('id', auth()->user()->id)->paginate(4);
+
+        return view('seeker.job-applied', compact('users', 'header'));
     }
 }

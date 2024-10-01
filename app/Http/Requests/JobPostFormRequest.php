@@ -27,9 +27,15 @@ class JobPostFormRequest extends FormRequest
             'description' => 'required|min:10',
             'roles' => 'required|min:10',
             'job_type' => 'required',
-            'address' => 'required',
             'date' => 'required',
-            'salary' => 'required'
+            'salary' => 'required',
+            'job_region' => 'required',
+            'experience' => 'required',
+            'education_experience' => 'required',
+            'other_benifits' => 'required',
+            'gender' => 'required',
+            'vacancy' => 'required',
+            'company' => 'required'
         ];
     }
 }
