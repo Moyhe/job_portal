@@ -3,7 +3,7 @@
     @php
         $job = auth()
             ->user()
-            ->listings()
+            ?->listings()
             ->where('listing_id', $listing->id);
     @endphp
 

@@ -33,9 +33,9 @@ class JoblistingController extends Controller
             ->get();
 
         $keywords = Search::query()
-            ->select('keyword', DB::raw('COUNT(*) as `count`'))
+            ->select('keyword', DB::raw('COUNT(*) as count'))
             ->groupBy('keyword')
-            ->havingRaw('count > 1')
+            ->havingRaw('COUNT(*) > 1')
             ->orderBy('count', 'asc')
             ->limit(3)
             ->get();
