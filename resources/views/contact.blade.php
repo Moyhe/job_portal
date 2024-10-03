@@ -50,7 +50,8 @@
                         </div>
                         <div class="row form-group">
                             <div class="col-md-12">
-                                <input type="submit" value="Send Message" class="btn btn-primary btn-md text-white">
+                                <input type="submit" id="button" value="Send Message"
+                                    class="btn btn-primary btn-md text-white">
                             </div>
                         </div>
 
@@ -146,6 +147,8 @@
 
             const success = document.querySelector('#successMessage');
             const errorElements = document.querySelectorAll('.error-message');
+            const button = document.querySelector('#button');
+
 
             axios.post('submit', formData, {
                     headers: {
@@ -153,20 +156,24 @@
                     }
                 })
                 .then(response => {
+                    button.disabled = true;
                     if (response.status == 200) {
                         removeError(errorElements);
                         successMessage = response.data.message;
                     }
                     document.querySelector('#successMessage').textContent = successMessage;
+                    button.disabled = false;
                     removeSucessMessage();
                 })
                 .catch(error => {
+                    button.disabled = true;
                     if (error.response.status == 422) {
                         errors = error.response.data.errors;
                     } else {
                         errors.general = 'An error occurred. Please try again.';
                     }
                     displayError(errors);
+                    button.disabled = false;
                 });
 
 

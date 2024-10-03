@@ -39,7 +39,7 @@ class ContactMail extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            view: 'email.mails',
+            view: 'emails.mails',
         );
     }
 
