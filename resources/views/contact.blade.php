@@ -136,6 +136,10 @@
             let errors = {};
             let successMessage = '';
 
+
+            const success = document.querySelector('#successMessage');
+            const errorElements = document.querySelectorAll('.error-message');
+
             formData.append('fname', document.querySelector('#fname').value);
             formData.append('lname', document.querySelector('#lname').value);
             formData.append('email', document.querySelector('#email').value);
@@ -146,9 +150,11 @@
             axios.post('/submit', formData)
                 .then(response => {
                     if (response.status == 200) {
+                        removeError(errorElements);
                         successMessage = response.data.message;
                     }
                     document.querySelector('#successMessage').textContent = successMessage;
+                    removeSucessMessage();
                 })
                 .catch(error => {
                     if (error.response.status == 422) {
@@ -156,20 +162,33 @@
                     } else {
                         errors.general = 'An error occurred. Please try again.';
                     }
-
-                    Object.keys(errors).forEach(function(key) {
-                        const errorElement = document.querySelector(`#${key}-error`);
-                        if (errorElement) {
-                            errorElement.textContent = errors[key][0];
-                        }
-                    });
+                    displayError(errors);
                 });
 
-            const errorElement = document.querySelector('#successMessage');
 
-            setTimeout(() => {
-                errorElement.textContent = '';
-            }, 3000);
+            function removeSucessMessage() {
+                setTimeout(() => {
+                    if (success) {
+                        success.textContent = '';
+                    }
+                }, 6000);
+            }
+
+            function removeError(errorElements) {
+                errorElements.forEach((err) => {
+                    err.textContent = '';
+                });
+            }
+
+            function displayError(errors) {
+                Object.keys(errors).forEach(function(key) {
+                    const errorElement = document.querySelector(`#${key}-error`);
+                    if (errorElement) {
+                        errorElement.textContent = errors[key][0];
+                    }
+                });
+            }
+
         });
     </script>
 
