@@ -6,6 +6,7 @@ use App\Http\Controllers\ApplicantController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileUploadController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JoblistingController;
 use App\Http\Controllers\JobSaveController;
 use App\Http\Controllers\PostJobController;
@@ -30,9 +31,7 @@ use Spatie\Permission\Middleware\RoleMiddleware;
 
 // home page
 
-Route::get('/', function () {
-    return view('home');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home.page');
 
 // email verification
 
@@ -114,7 +113,7 @@ Route::post('admin/logout', [AdminController::class, 'logout'])->name('admin.log
 
 Route::group(['prefix' => 'admin', 'middleware' => [RoleMiddleware::using('admin')]], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->middleware(['verified', 'auth'])
+        ->middleware(['auth'])
         ->name('dashboard');
 
     // job creation

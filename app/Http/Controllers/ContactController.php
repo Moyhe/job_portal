@@ -26,12 +26,12 @@ class ContactController extends Controller
             'message' => ['required', 'string']
         ]);
 
-        // try {
-        //     Mail::to('mohyemahmoud123@gmail.com')
-        //         ->send(new ContactMail($validated['fname'], $validated['lname'], $validated['message']));
-        // } catch (\Exception $e) {
-        //     return response()->json(['error' => $e->getMessage()]);
-        // }
+        try {
+            Mail::to('mohyemahmoud123@gmail.com')
+                ->send(new ContactMail($validated['fname'], $validated['lname'], $validated['message']));
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
 
         return response()->json([
             'message' => 'thanks for you we will contact you soon'
