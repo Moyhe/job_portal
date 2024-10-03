@@ -67,7 +67,8 @@ Route::get('/about', AboutController::class);
 
 // contact us
 
-Route::get('/contact', ContactController::class);
+Route::get('/contact', [ContactController::class, 'index']);
+Route::post('/submit', [ContactController::class, 'store']);
 
 // profile
 

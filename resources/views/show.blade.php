@@ -109,7 +109,6 @@
 
                             <!-- The Modal -->
                             <div id="myModal" class="modal">
-
                                 <form action="{{ route('applicantion.submit', [$listing->id]) }}" method="POST">
                                     @csrf
                                     <!-- Modal content -->
