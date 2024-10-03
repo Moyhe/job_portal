@@ -131,14 +131,9 @@
         document.querySelector('#contactForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
             const formData = new FormData();
-
-            let errors = {};
-            let successMessage = '';
-
-
-            const success = document.querySelector('#successMessage');
-            const errorElements = document.querySelectorAll('.error-message');
 
             formData.append('fname', document.querySelector('#fname').value);
             formData.append('lname', document.querySelector('#lname').value);
@@ -146,8 +141,17 @@
             formData.append('subject', document.querySelector('#subject').value);
             formData.append('message', document.querySelector('#message').value);
 
+            let errors = {};
+            let successMessage = '';
 
-            axios.post('/submit', formData)
+            const success = document.querySelector('#successMessage');
+            const errorElements = document.querySelectorAll('.error-message');
+
+            axios.post('submit', formData, {
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    }
+                })
                 .then(response => {
                     if (response.status == 200) {
                         removeError(errorElements);
